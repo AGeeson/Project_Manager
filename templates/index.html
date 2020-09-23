@@ -1,0 +1,76 @@
+{% load static %}
+
+<head>
+    <title>GPM</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" />
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <script src="{% static 'popper.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+</head>
+<link rel="stylesheet" href="{% static 'index.css' %}" />
+<link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet">
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Project Name</th>
+            <th scope="col">No. of Tasks</th>
+            <th scope="col">No. of Essential Tasks</th>
+            <th scope="col">% Essential Complete</th>
+            <th scope="col">Date Created </th>
+
+        </tr>
+    </thead>
+    <tbody>
+        {% for project in projects %}
+        <tr>
+
+            <th scope="row">{{ project.id }}</th>
+
+            <td>
+                <a href="{% url 'projects' project.id %}">{{ project.name }}</a>
+            </td>
+            <td>{{ project.task_count }}</td>
+            <td>{{ project.essential_task_count }}</td>
+            <td>{{ project.essential_percent_complete }}</td>
+            <td>{{ project.date_added }}</td>
+            </a>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<section>
+    <div>
+        <h3>New Project:</h3>
+        <form action="{% url 'index' %}" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input class="butt" type="submit" value="Submit">
+        </form>
+    </div>
+</section>
+<section class="hero-section">
+    <div class="card-grid">
+        {% for project in projects %}
+        <a class="card" href="{% url 'projects' project.id %}">
+            <div class="card__background"
+                style="background-image: url(https://images.unsplash.com/photo-1557177324-56c542165309?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80)">
+            </div>
+            <div class="card__content">
+                <p class="card__category">Mostly:</p>
+                <h3 class="card__heading">Project: {{ project.name.title }}</h3>
+                <p style=" color: aliceblue;">Ongoing Tasks:</p>
+                {% for task in project.tasks.all %}
+                <ul style="color: aliceblue;">
+                    <li>{{ task.name|linebreaks }}</li>
+                    <p> {{ task.progress }}</p>
+                    <p style="color: aliceblue;">{{ task.date_added|date:'M d, Y H:i' }}</p>
+                </ul>
+                {% endfor %}
+
+            </div>
+        </a>
+        {% endfor %}
+</section>
